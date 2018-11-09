@@ -29,7 +29,7 @@ import numpy as np
 #
 #         return F.log_softmax(x, dim=1)
 
-
+#####  Master
 class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
