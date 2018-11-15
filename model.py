@@ -46,7 +46,7 @@ class Net(nn.Module):
 
         # x = x.view(-1,24*24 *2)
         # x = self.fc1(x)
-        x = F.max_pool2d(x,24)
+        x = F.max_pool2d(x,26)
         x = x.view(-1, 2)
 
         # x = F.sigmoid(F.max_pool2d(self.conv1(x), 2))
