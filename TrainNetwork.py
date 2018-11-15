@@ -31,15 +31,29 @@ class ManualDataset(Dataset):
         data = np.zeros((28,28),dtype="float32")
         data = data.astype("float32")
 
-        basex = random.randint(3, 25)
-        basey = random.randint(3, 25)
+        # basex = random.randint(3, 25)
+        # basey = random.randint(3, 25)
 
-        if random.random()>0.5:
-            data[basex,basey-1:basey+2]=255
-            label = 0
-        else:
-            data[basex-1:basex+2,basey] = 255
+        num1 = random.random()
+        num2 = random.random()
+
+        if num1>0.5 and num2>0.5:
+            data[14,14]=num1
+            data[14,15]=num2
             label = 1
+        else:
+            # if num1>0.5:
+            #     data[14,14] = 1
+            # else:
+            #     data[14,14] = 0
+            #
+            # if num2>0.5:
+            #     data[14,15] = 1
+            # else:
+            #     data[14,15] = 0
+            data[14, 14] = num1
+            data[14, 15] = num2
+            label = 0
 
         data = (data-128)/256.0
         img = torch.from_numpy(data)

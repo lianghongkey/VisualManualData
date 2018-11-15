@@ -33,7 +33,7 @@ import numpy as np
 class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
-        self.conv1 = nn.Conv2d(1,  2, kernel_size=3)
+        self.conv1 = nn.Conv2d(1,  2, kernel_size=5)
         self.conv2 = nn.Conv2d(2,  2, kernel_size=3)
         # self.conv3 = nn.Conv2d(2, 2, kernel_size=5)
         self.fc1 = nn.Linear(24 * 24 * 2, 2)
@@ -44,9 +44,10 @@ class Net(nn.Module):
         x = F.sigmoid(self.conv1(x))
         # x = F.sigmoid(self.conv2(x))
 
-        # x = x.view(-1,24*24 *2)
-        # x = self.fc1(x)
-        x = F.max_pool2d(x,24)
+        x = x.view(-1,24*24*2)
+        x = self.fc1(x)
+
+        # x = F.max_pool2d(x,24)
         x = x.view(-1, 2)
 
         # x = F.sigmoid(F.max_pool2d(self.conv1(x), 2))
