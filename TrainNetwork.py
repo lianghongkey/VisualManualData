@@ -31,12 +31,14 @@ class ManualDataset(Dataset):
         data = np.zeros((28,28),dtype="float32")
         data = data.astype("float32")
 
+        basex = random.randint(3, 25)
+        basey = random.randint(3, 25)
 
         if random.random()>0.5:
-            data[14,13:16]=255
+            data[basex,basey-1:basey+2]=255
             label = 0
         else:
-            data[13:16,14] = 255
+            data[basex-1:basex+2,basey] = 255
             label = 1
 
         data = (data-128)/256.0
