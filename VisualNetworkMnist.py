@@ -94,9 +94,17 @@ def visualmodle(initimagefile,netmodel,layer,channel):
         # output = netmodel(output)
         # output = netout[0][0,channel]
 
+
         handle = netmodel.conv1.register_forward_hook(getnet)
         output = netmodel(output)
         output = netout[0][0, channel, : , :]
+
+        output = output.view(1,1, output.shape[0], output.shape[1])
+        output = F.max_pool2d(output, netmodel.conv1.kernel_size[0])
+
+
+###############################
+######################################################
 
         netout=[]
         netint=[]
