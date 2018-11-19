@@ -33,13 +33,6 @@ class Net(nn.Module):
     def forward(self, x):
 
         x = F.sigmoid(self.conv1(x))
-<<<<<<< HEAD
-        # x = F.sigmoid(self.conv2(x))
-
-        # x = x.view(-1,24*24 *2)
-        # x = self.fc1(x)
-=======
->>>>>>> master
         x = F.max_pool2d(x,26)
         x = x.view(-1, 2)
 
