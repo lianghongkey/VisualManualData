@@ -34,12 +34,20 @@ class ManualDataset(Dataset):
         basex = random.randint(3, 25)
         basey = random.randint(3, 25)
 
-        if random.random()>0.5:
-            data[basex,basey-1:basey+2]=255
-            label = 0
-        else:
-            data[basex-1:basex+2,basey] = 255
+        num1 = random.random() * 256.0 # the probability of num1 be positive
+        num2 = random.random() * 256.0 # the probability of num2 be positive
+
+        data[basex, basey] = num1
+        data[basex, basey] = num2
+
+        if num1*num1 > 0.5 :  # the probability of num1 and num2 are positive
             label = 1
+        else:
+            label = 0
+
+
+
+
 
         data = (data-128)/256.0
         img = torch.from_numpy(data)
