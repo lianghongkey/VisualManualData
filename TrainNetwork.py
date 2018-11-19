@@ -13,12 +13,10 @@ from torch.utils.data import Dataset, DataLoader
 from PIL import Image
 import random
 
-
-
 batchsize = 16
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-print("device: "+ str(device))
+print("device: " + str(device))
 
 
 class ManualDataset(Dataset):
@@ -28,49 +26,45 @@ class ManualDataset(Dataset):
     def __getitem__(self, index):
 
         # data = np.random.random_integers(0,255,(28,28))
-        data = np.zeros((28,28),dtype="float32")
+        data = np.zeros((28, 28), dtype="float32")
         data = data.astype("float32")
 
         basex = random.randint(3, 25)
         basey = random.randint(3, 25)
 
-        num1 = random.random() * 256.0 # the probability of num1 be positive
-        num2 = random.random() * 256.0 # the probability of num2 be positive
+        num1 = random.random() * 256.0  # the probability of num1 be positive
+        num2 = random.random() * 256.0  # the probability of num2 be positive
 
         data[basex, basey] = num1
         data[basex, basey] = num2
 
-        if num1*num1 > 0.5 :  # the probability of num1 and num2 are positive
+        if num1 * num1 > 0.5:  # the probability of num1 and num2 are positive
             label = 1
         else:
             label = 0
 
-
-
-
-
-        data = (data-128)/256.0
+        data = (data - 128) / 256.0
         img = torch.from_numpy(data)
-        img = img.view(1,28,28)
-        return img,label
+        img = img.view(1, 28, 28)
+        return img, label
 
     def __len__(self):
         return 10000
 
-train_loader = torch.utils.data.DataLoader(
-        ManualDataset(transform=transforms.Compose([
-                           # transforms.ColorJitter(0.2,0.2),
-                           # transforms.RandomRotation(30),
-                           # transforms.RandomResizedCrop(28),
-                           transforms.ToTensor(),
-                           transforms.Normalize((128,), (256,)),])),
-                       batch_size=batchsize, shuffle=True, num_workers=2)
-test_loader = torch.utils.data.DataLoader(
-        ManualDataset(transform=transforms.Compose([
-            transforms.ToTensor(),
-            transforms.Normalize((128,), (256,))])),
-        batch_size=batchsize, shuffle=True, num_workers=2)
 
+train_loader = torch.utils.data.DataLoader(
+    ManualDataset(transform=transforms.Compose([
+        # transforms.ColorJitter(0.2,0.2),
+        # transforms.RandomRotation(30),
+        # transforms.RandomResizedCrop(28),
+        transforms.ToTensor(),
+        transforms.Normalize((128,), (256,)), ])),
+    batch_size=batchsize, shuffle=True, num_workers=2)
+test_loader = torch.utils.data.DataLoader(
+    ManualDataset(transform=transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Normalize((128,), (256,))])),
+    batch_size=batchsize, shuffle=True, num_workers=2)
 
 model = (Net()).to(device)
 optimizer = optim.SGD(model.parameters(), lr=0.01)
@@ -87,8 +81,11 @@ def train(epoch):
         loss.backward()
         optimizer.step()
 
-        if batch_idx % 930 == 0 and batch_idx>0 :
-            print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(epoch, batch_idx * len(data), len(train_loader.dataset),100. * batch_idx / len(train_loader), loss.item()))
+        if batch_idx % 930 == 0 and batch_idx > 0:
+            print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(epoch, batch_idx * len(data),
+                                                                           len(train_loader.dataset),
+                                                                           100. * batch_idx / len(train_loader),
+                                                                           loss.item()))
 
 
 def test():
@@ -107,11 +104,14 @@ def test():
             correct += pred.eq(target.view_as(pred)).sum().item()
 
         test_loss /= len(test_loader.dataset)
-        print('\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(test_loss, correct, len(test_loader.dataset),100. * correct / len(test_loader.dataset)))
+        print('\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(test_loss, correct,
+                                                                                     len(test_loader.dataset),
+                                                                                     100. * correct / len(
+                                                                                         test_loader.dataset)))
+
 
 for epoch in range(1, 20):
     train(epoch)
     test()
 
-torch.save(model.state_dict(),"mnistcnn.pth.tar")
-
+torch.save(model.state_dict(), "mnistcnn.pth.tar")
