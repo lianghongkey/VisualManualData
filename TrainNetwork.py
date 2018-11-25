@@ -12,6 +12,7 @@ from model import Net
 from torch.utils.data import Dataset, DataLoader
 from PIL import Image
 import random
+import cv2
 
 batchsize = 16
 
@@ -29,19 +30,25 @@ class ManualDataset(Dataset):
         data = np.zeros((28, 28), dtype="float32")
         data = data.astype("float32")
 
-        basex = random.randint(3, 25)
-        basey = random.randint(3, 25)
+        radiu = int(random.random()*7+3)
+        basex = random.randint(radiu, 29-radiu)
+        basey = random.randint(radiu, 29-radiu)
+        ifcircle = random.random()
 
-        num1 = random.random() * 256.0  # the probability of num1 be positive
-        num2 = random.random() * 256.0  # the probability of num2 be positive
-
-        data[basex, basey] = num1
-        data[basex, basey] = num2
-
-        if num1 * num1 > 0.5:  # the probability of num1 and num2 are positive
-            label = 1
-        else:
+        if ifcircle>0.5:
+            cv2.circle(data,(basex,basey),radiu,255,-1)
+            angle = random.random() * 360
+            M = cv2.getRotationMatrix2D((basex, basey), angle, 1.0)
+            data = cv2.warpAffine(data, M, (28, 28))
             label = 0
+        else:
+            cv2.rectangle(data,(basex-radiu,basey-radiu),(basex+radiu,basey+radiu),255,-1)
+            angle = random.random() * 360
+            M = cv2.getRotationMatrix2D((basex,basey), angle, 1.0)
+            data = cv2.warpAffine(data, M, (28,28))
+            label = 1
+
+        # cv2.imwrite("test.jpg",data)
 
         data = (data - 128) / 256.0
         img = torch.from_numpy(data)
@@ -110,7 +117,7 @@ def test():
                                                                                          test_loader.dataset)))
 
 
-for epoch in range(1, 20):
+for epoch in range(1, 150):
     train(epoch)
     test()
 

@@ -93,7 +93,7 @@ def visualmodle(initimagefile, netmodel, layer, channel):
         # output = netmodel(output)
         # output = netout[0][0,channel]
 
-        handle = netmodel.conv1.register_forward_hook(getnet)
+        handle = netmodel.conv2.register_forward_hook(getnet)
         output = netmodel(output)
         output = netout[0][0, channel, :, :]
 
@@ -130,8 +130,7 @@ def visualmodle(initimagefile, netmodel, layer, channel):
     return out
 
 
-# 128  7
-# 512  30
+
 for i in range(512):
     out = visualmodle(None, netmodel, 1, i)
     cv2.imwrite("./imageout/L7_C" + str(i) + ".jpg", out)
